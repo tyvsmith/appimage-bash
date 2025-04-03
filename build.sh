@@ -155,12 +155,17 @@ chmod +x $APP_DIRECTORY/AppRun
 
 echo "==> Setup icons and desktop for $APP_SHORT_NAME AppImage"
 # Add defaults which we need for proper app image. Desktop files, icons.
-cp $APP_FILENAME $APP_DIRECTORY/"$APP_SHORT_NAME".desktop
-sed -i '/VersionUrl/d' $APP_DIRECTORY/"$APP_SHORT_NAME".desktop
-sed -i '/VersionFile/d' $APP_DIRECTORY/"$APP_SHORT_NAME".desktop
-sed -i '/VersionBash/d' $APP_DIRECTORY/"$APP_SHORT_NAME".desktop
-sed -i '/VersionIcon/d' $APP_DIRECTORY/"$APP_SHORT_NAME".desktop
-sed -i '/VersionDirectory/d' $APP_DIRECTORY/"$APP_SHORT_NAME".desktop
+
+for DESKTOP_INPUT in app*.desktop; do
+    DESKTOP_OUTPUT="$APP_DIRECTORY/${DESKTOP_INPUT/app/$APP_SHORT_NAME}"
+    cp "$DESKTOP_INPUT" "$DESKTOP_OUTPUT"
+    sed -i '/VersionUrl/d' "$DESKTOP_OUTPUT"
+    sed -i '/VersionFile/d' "$DESKTOP_OUTPUT"
+    sed -i '/VersionBash/d' "$DESKTOP_OUTPUT"
+    sed -i '/VersionIcon/d' "$DESKTOP_OUTPUT"
+    sed -i '/VersionDirectory/d' "$DESKTOP_OUTPUT"
+    echo "Copied $DESKTOP_INPUT to $DESKTOP_OUTPUT"
+done
 
 ICON_PATH=$(find $APP_DEPLOY -type f -name "$APP_VERSION_ICON")
 ICON_EXTENSION="${ICON_PATH#*.}"
